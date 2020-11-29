@@ -1,4 +1,5 @@
 all:
-	gcc main.c -o main
+	python3 main.py test.input
 clean:
-	rm main
+	rm ./stroage/*
+	rm test.output
