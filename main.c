@@ -2,12 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 FILE *fin, *fout;
 
 void act_put(uint64_t, char*);
 void act_get(uint64_t);
 void act_scan(uint64_t, uint64_t);
+
+struct stat st = {0};
 
 int main(int argc, char** argv){
     char outfile_name[strlen(argv[1]) + 10];
@@ -18,26 +23,29 @@ int main(int argc, char** argv){
         printf("Open output file error!");
         exit(0);
     }
+    if(stat("./stroage", &st) == -1){
+    	mkdir("./stroage", 0700);
+    }
 
     char command[5];
     while(fscanf(fin, "%s", command) != EOF){
-        printf("%s ", command);
+        // printf("%s ", command);
         if(strcmp(command, "PUT") == 0){
             uint64_t key;
             char value[129];
             memset(value, '\0', sizeof(value));
             fscanf(fin, "%lu %s", &key, value);
-            printf("%lu %s\n", key, value);
+            // printf("%lu %s\n", key, value);
             act_put(key, value);
         } else if(strcmp(command, "GET") == 0){
             uint64_t key;
             fscanf(fin, "%lu", &key);
-            printf("%lu\n", key);
+            // printf("%lu\n", key);
             act_get(key);
         } else if(strcmp(command, "SCAN") == 0){
             uint64_t key1, key2;
             fscanf(fin, "%lu %lu", &key1, &key2);
-            printf("%lu %lu\n", key1, key2);
+            // printf("%lu %lu\n", key1, key2);
             act_scan(key1, key2);
         }
     }
