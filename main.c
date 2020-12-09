@@ -22,8 +22,8 @@ int main(int argc, char** argv){
         printf("Open output file error!");
         exit(0);
     }
-    if(stat("./stroage", &st) == -1){
-    	mkdir("./stroage", 0700);
+    if(stat("./storage", &st) == -1){
+    	mkdir("./storage", 0700);
     }
 
     char command[5];
@@ -74,40 +74,40 @@ void act_put(uint64_t key, char value[129]){
     uint32_t arr_num = key >> 32;
     uint32_t index = key & 0xffffffff;
 
-    char filepath[25] = "./stroage/";
+    char filepath[25] = "./storage/";
     sprintf(filepath + 10, "%u", arr_num);
     strcat(filepath, ".tmp");
 
-    FILE *stroage;
-    if(!(stroage = fopen(filepath, "rb+"))){
-        if(!(stroage = fopen(filepath, "wb"))){
+    FILE *storage;
+    if(!(storage = fopen(filepath, "rb+"))){
+        if(!(storage = fopen(filepath, "wb"))){
             printf("Open tmp file error!\n");
             exit(0);
         }
     }
-    fseek(stroage, index * 128, SEEK_SET);
-    fwrite(value, sizeof(char), 128, stroage);
-    fclose(stroage);
+    fseek(storage, index * 128, SEEK_SET);
+    fwrite(value, sizeof(char), 128, storage);
+    fclose(storage);
 }
 
 void act_get(uint64_t key){
     uint32_t arr_num = key >> 32;
     uint32_t index = key & 0xffffffff;
     
-    char filepath[25] = "./stroage/";
+    char filepath[25] = "./storage/";
     sprintf(filepath + 10, "%u", arr_num);
     strcat(filepath, ".tmp");
 
-    FILE *stroage;
-    if(!(stroage = fopen(filepath, "rb"))){
+    FILE *storage;
+    if(!(storage = fopen(filepath, "rb"))){
         fprintf(fout, "EMPTY\n");
     } else {
         char value[129];
         memset(value, '\0', sizeof(value));
-        fseek(stroage, index * 128, SEEK_SET);
-        fread(value, sizeof(char), 128, stroage);
+        fseek(storage, index * 128, SEEK_SET);
+        fread(value, sizeof(char), 128, storage);
         fprintf(fout, "%s\n", value[0] == '\0' ? "EMPTY" : value);
-        fclose(stroage);
+        fclose(storage);
     }
 }
 
