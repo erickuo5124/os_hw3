@@ -8,6 +8,7 @@
 
 FILE *fin, *fout;
 
+char *get_filename(char *);
 void act_put(uint64_t, char*);
 void act_get(uint64_t);
 void act_scan(uint64_t, uint64_t);
@@ -15,10 +16,8 @@ void act_scan(uint64_t, uint64_t);
 struct stat st = {0};
 
 int main(int argc, char** argv){
-    char outfile_name[strlen(argv[1]) + 10];
-    memset(outfile_name, '\0', strlen(outfile_name));
-    strncat(outfile_name, argv[1], strlen(argv[1])-6);
-    strcat(outfile_name, ".output");
+    char *outfile_name;
+    outfile_name = get_filename(argv[1]);
     if(!(fin = fopen(argv[1], "r")) || !(fout = fopen(outfile_name, "w"))){
         printf("Open output file error!");
         exit(0);
@@ -52,6 +51,20 @@ int main(int argc, char** argv){
 
     fclose(fin);
     fclose(fout);
+}
+
+char *get_filename(char *filepath){
+    char *filename = malloc(sizeof(char) * 100);
+    memset(filename, '\0', strlen(filename));
+    for(int i = strlen(filepath)-1; i >= 0; --i){
+        if(filepath[i] == '/'){
+            ++i;
+            strncat(filename, filepath + i, strlen(filepath) - i - 6);
+            break;
+        }
+    }
+    strcat(filename, ".output");
+    return filename;
 }
 
 void act_put(uint64_t key, char value[129]){
