@@ -55,14 +55,17 @@ int main(int argc, char** argv){
 
 char *get_filename(char *filepath){
     char *filename = malloc(sizeof(char) * 100);
+    printf("%s\n", filepath);
     memset(filename, '\0', strlen(filename));
-    for(int i = strlen(filepath)-1; i >= 0; --i){
+    int i = strlen(filepath) - 1;
+    for(; i >= 0; --i){
         if(filepath[i] == '/'){
             ++i;
             strncat(filename, filepath + i, strlen(filepath) - i - 6);
             break;
         }
     }
+    if(i < 0) strncat(filename, filepath, strlen(filepath) - 6);
     strcat(filename, ".output");
     return filename;
 }
